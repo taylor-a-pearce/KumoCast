@@ -29,9 +29,22 @@
 		3484EAB52DEFAD7D0067CCC4 /* KumoCastUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KumoCastUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		34FC4F9F2E1732BA00F2DACE /* Exceptions for "KumoCast" folder in "KumoCast" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3484EA9D2DEFAD7B0067CCC4 /* KumoCast */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3484EAA02DEFAD7B0067CCC4 /* KumoCast */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				34FC4F9F2E1732BA00F2DACE /* Exceptions for "KumoCast" folder in "KumoCast" target */,
+			);
 			path = KumoCast;
 			sourceTree = "<group>";
 		};
@@ -382,6 +395,7 @@
 				DEVELOPMENT_TEAM = 7S6J272U8G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KumoCast/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -410,6 +424,7 @@
 				DEVELOPMENT_TEAM = 7S6J272U8G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KumoCast/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
