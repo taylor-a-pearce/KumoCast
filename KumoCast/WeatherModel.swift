@@ -9,19 +9,7 @@ struct WeatherModel: Codable {
     let airTemperature: Double
     let symbolCode1Hour: String?
     let symbolCode6Hour: String?
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        airTemperature = try container.decode(Double.self, forKey: .airTemperature)
-        symbolCode1Hour = try container.decodeIfPresent(String.self, forKey: .symbolCode1Hour)
-        symbolCode6Hour = try container.decodeIfPresent(String.self, forKey: .symbolCode6Hour)
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case airTemperature
-        case symbolCode1Hour
-        case symbolCode6Hour
-    }
+    let symbolCode12Hour: String?
 }
 
 struct MetNoResponse: Codable {
@@ -29,17 +17,18 @@ struct MetNoResponse: Codable {
 }
 
 struct Properties: Codable {
-    let timeSeries: [TimeSeries]
+    let timeseries: [Timeseries]
 }
 
-struct TimeSeries: Codable {
-    let weatherData: WeatherData
+struct Timeseries: Codable {
+    let data: WeatherData
 }
 
 struct WeatherData: Codable {
     let instant: Instant
-    let next1Hour: Next1Hour?
+    let next1Hours: Next1Hours?
     let next6Hours: Next6Hours?
+    let next12Hours: Next12Hours?
 }
 
 struct Instant: Codable {
@@ -47,14 +36,18 @@ struct Instant: Codable {
 }
 
 struct Details: Codable {
-    let air_temperature: Double
+    let airTemperature: Double
 }
 
-struct Next1Hour: Codable {
+struct Next1Hours: Codable {
     let summary: Summary
 }
 
 struct Next6Hours: Codable {
+    let summary: Summary
+}
+
+struct Next12Hours: Codable {
     let summary: Summary
 }
 
