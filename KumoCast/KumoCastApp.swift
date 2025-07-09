@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct KumoCastApp: App {
+    @State private var locationManager = LocationManager()
     var body: some Scene {
         WindowGroup {
-            WeatherView()
+            if locationManager.isAuthorized {
+                WeatherView()
+            } else {
+                LocationDeniedView()
+            }
         }
+        .environment(locationManager)
     }
 }
