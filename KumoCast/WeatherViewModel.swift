@@ -7,12 +7,13 @@
 
 import Foundation
 import WeatherKit
+import SwiftUI
 
 @MainActor
 final class WeatherViewModel: ObservableObject {
-    @Published var current: CurrentWeather?
-    @Published var hourly: Forecast<HourWeather>?
-    @Published var daily: Forecast<DayWeather>?
+    @Published var currentWeather: CurrentWeather?
+    @Published var hourlyWeather: Forecast<HourWeather>?
+    @Published var dailyWeather: Forecast<DayWeather>?
 
 
     private let stampKey = "WeatherLastFetch"
@@ -40,23 +41,23 @@ final class WeatherViewModel: ObservableObject {
 
     func fetchWeatherIfNeeded(lat: Double, lon: Double) async {
         let now = Date()
-        if let lastFetch = lastFetchDate, now.timeIntervalSince(lastFetch) < 600 {
-            print("Using cached weather data (less than 10 minutes old).")
-            if let cachedWeather = loadWeatherFromCache() {
-                self.current = cachedWeather.current
-                self.hourly = cachedWeather.hourly
-                self.daily = cachedWeather.daily
-                return
-            } else {
-                print("Cached weather data missing or corrupted, refetching from API")
-            }
-        }
+//        if let lastFetch = lastFetchDate, now.timeIntervalSince(lastFetch) < 600  {
+//            print("Using cached weather data (less than 10 minutes old).")
+//            if let cachedWeather = loadWeatherFromCache() {
+//                self.current = cachedWeather.current
+//                self.hourly = cachedWeather.hourly
+//                self.daily = cachedWeather.daily
+//                return
+//            } else {
+//                print("Cached weather data missing or corrupted, refetching from API")
+//            }
+//        }
         do {
             let bundle = try await WeatherManager.shared.fetchWeatherBundles(for: .init(latitude: lat, longitude: lon)
             )
-            self.current = bundle.current
-            self.hourly = bundle.hourly
-            self.daily = bundle.daily
+            self.currentWeather = bundle.current
+            self.hourlyWeather = bundle.hourly
+            self.dailyWeather = bundle.daily
             saveWeatherToCache(bundle)
             lastFetchDate = now
             print("Fetched new weather data from API.")

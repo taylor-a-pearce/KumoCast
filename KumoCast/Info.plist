@@ -4,5 +4,7 @@
 <dict>
 	<key>OPENWEATHER_API_KEY</key>
 	<string>719a903417329f11a08fd6c04b45f1cd</string>
+	<key>UIUserInterfaceStylo</key>
+	<string>Dark</string>
 </dict>
 </plist>

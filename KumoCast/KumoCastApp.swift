@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct KumoCastApp: App {
     @State private var locationManager = LocationManager()
+    @State private var store = DataStore()
     var body: some Scene {
         WindowGroup {
             if locationManager.isAuthorized {
@@ -19,5 +20,6 @@ struct KumoCastApp: App {
             }
         }
         .environment(locationManager)
+        .environment(store)
     }
 }
