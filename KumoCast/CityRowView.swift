@@ -15,6 +15,8 @@ struct CityRowView: View {
     @State private var isLoading: Bool = false
     @State private var timezone: TimeZone = .current
     let city: City
+    var isCurrentLocation: Bool = false
+
     var body: some View {
             VStack(alignment: .leading) {
                 HStack {
@@ -50,12 +52,13 @@ struct CityRowView: View {
                     BackgroundView(condition: condition)
                 }
         }
-
         .task(id: city) {
             Task {
-                await viewModel.fetchWeatherIfNeeded(
-                    lat: city.clLocation.coordinate.latitude,
-                    lon: city.clLocation.coordinate.longitude)
+                if isCurrentLocation, let location = locationManager.userLocation {
+                    await viewModel.fetchCurrentLocationWeather(for: location)
+                } else {
+                    await viewModel.fetchSelectedCityWeather(for: city)
+                }
                 timezone = await locationManager.getTimezone(for: city.clLocation)
             }
         }

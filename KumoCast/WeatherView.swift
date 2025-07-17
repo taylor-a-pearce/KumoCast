@@ -18,9 +18,13 @@ struct WeatherView: View {
     @Environment(LocationManager.self) var locationManager
     @Environment(\.scenePhase) private var scenePhase
     @State private var selectedCity: City?
+    @State private var currentCity: City?
     @State private var citiesListViewIsPresented: Bool = false
     @State private var timezone: TimeZone = .current
 
+    private var displayCity: City? {
+        selectedCity ?? currentCity
+    }
     var highTemperature: String? {
         if let high = viewModel.hourlyWeather?.map({$0.temperature}).max() {
             return weatherManager.temperatureFormatter.string(from: high)
@@ -39,7 +43,7 @@ struct WeatherView: View {
 
     var body: some View {
         ZStack {
-            if selectedCity == nil {
+            if displayCity == nil {
                     VStack(spacing: 8) {
                         ProgressView()
                         Text("Locating…")
@@ -51,18 +55,16 @@ struct WeatherView: View {
                         Text("Fetching weather…")
                     }
                     .foregroundColor(.white)
-            } else if let selectedCity {
-                if let current = viewModel.currentWeather {
+            } else if let displayCity, let currentWeather = viewModel.currentWeather {
                     VStack {
                         ScrollView(.vertical) {
 
-                            CityTextView(cityName: selectedCity.name)
+                            CityTextView(cityName: displayCity.name)
 
                             MainWeatherView(
-                                imageName: viewModel.currentWeather?.symbolName ?? "cloud.fill",
+                                imageName: currentWeather.symbolName,
                                 temp: WeatherManager.shared.temperatureFormatter.string(
-                                    from: (viewModel.currentWeather?.temperature
-                                           ?? Measurement(value: 0, unit: UnitTemperature.celsius))
+                                    from: (currentWeather.temperature)
                                     .converted(to: .fahrenheit)
                                 ),
                                 highTemp: highTemperature,
@@ -95,72 +97,54 @@ struct WeatherView: View {
                     }
                 }
             }
-        }
         .background {
-            if selectedCity != nil {
+            if displayCity != nil {
                 if let condition = viewModel.currentWeather?.condition {
                     BackgroundView(condition: condition)
                 }
             }
         }
         .task(id: locationManager.currentLocation) {
-            if let currentLocation = locationManager.currentLocation, selectedCity == nil {
-                selectedCity = currentLocation
+            if let currentLocation = locationManager.userLocation, selectedCity == nil {
+                currentCity = locationManager.currentLocation
+                Task {
+                    await viewModel.fetchCurrentLocationWeather(for: currentLocation)
+                }
             }
+        }
+        .task(id: currentCity?.id) {
+            guard let _ = currentCity,
+                  selectedCity == nil,
+                  let location = locationManager.userLocation else { return }
+            isLoading = true
+            await viewModel.fetchCurrentLocationWeather(for: location)
+            isLoading = false
         }
 
         .task(id: selectedCity) {
             if let selectedCity {
                 isLoading = true
-
                 Task {
-
-                    await viewModel.fetchWeatherIfNeeded(
-                        lat: selectedCity.clLocation.coordinate.latitude,
-                        lon: selectedCity.clLocation.coordinate.longitude)
+                    await viewModel.fetchSelectedCityWeather(for: selectedCity)
                     isLoading = false
                 }
             }
         }
         .fullScreenCover(isPresented: $citiesListViewIsPresented) {
-            CitiesListView(currentLocation: locationManager.currentLocation, selectedCity: $selectedCity)
+            CitiesListView(currentLocation: locationManager.currentLocation, selectedCity: $selectedCity, currentCity: $currentCity)
         }
         .onChange(of: scenePhase) {
             if scenePhase == .active {
-                selectedCity = locationManager.currentLocation
-                if let selectedCity {
-                    Task {
-                        await viewModel.fetchWeatherIfNeeded(
-                            lat: selectedCity.clLocation.coordinate.latitude,
-                            lon: selectedCity.clLocation.coordinate.longitude)
-                    }
+                if selectedCity == nil,
+                   let location = locationManager.userLocation {
+                    Task { await viewModel.fetchCurrentLocationWeather(for: location) }
+                } else if let selectedCity = selectedCity {
+                    Task { await viewModel.fetchSelectedCityWeather(for: selectedCity) }
                 }
             }
         }
     }
-    }
-    struct weatherOfDay: View {
-        var day: String
-        var image: String
-        var temp: Int
-
-        var body: some View {
-            VStack {
-                Text(day)
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
-                Image(systemName: image)
-                    .symbolRenderingMode(.multicolor)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 40, height: 40)
-                Text("\(temp)°")
-                    .font(.system(size: 28, weight: .medium))
-                    .foregroundColor(.white)
-            }
-        }
-    }
-
+}
 
     struct CityTextView: View {
         var cityName: String

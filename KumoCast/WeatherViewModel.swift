@@ -8,6 +8,7 @@
 import Foundation
 import WeatherKit
 import SwiftUI
+import CoreLocation
 
 @MainActor
 final class WeatherViewModel: ObservableObject {
@@ -15,54 +16,52 @@ final class WeatherViewModel: ObservableObject {
     @Published var hourlyWeather: Forecast<HourWeather>?
     @Published var dailyWeather: Forecast<DayWeather>?
 
+    private let weatherManager = WeatherManager.shared
 
-    private let stampKey = "WeatherLastFetch"
-    private let weatherDataKey = "WeatherCachedData"
-
-    private var lastFetchDate: Date? {
-        get {
-            UserDefaults.standard.object(forKey: stampKey) as? Date
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: stampKey)
-        }
+    private func applyCache(bundle: WeatherBundles) {
+        currentWeather = bundle.current
+        hourlyWeather = bundle.hourly
+        dailyWeather = bundle.daily
     }
 
-    private func saveWeatherToCache(_ weather: WeatherBundles) {
-        if let data = try? JSONEncoder().encode(weather) {
-            UserDefaults.standard.set(data, forKey: weatherDataKey)
+    func fetchSelectedCityWeather(for city: City) async {
+        if let cached = WeatherCacheManager.load(for: city.id) {
+            applyCache(bundle: cached)
+            print("🟢 Loaded from Cache for \(city.name)")
+            return
         }
-    }
-
-    private func loadWeatherFromCache() -> WeatherBundles? {
-            guard let data = UserDefaults.standard.data(forKey: weatherDataKey) else { return nil }
-            return try? JSONDecoder().decode(WeatherBundles.self, from: data)
-        }
-
-    func fetchWeatherIfNeeded(lat: Double, lon: Double) async {
-        let now = Date()
-//        if let lastFetch = lastFetchDate, now.timeIntervalSince(lastFetch) < 600  {
-//            print("Using cached weather data (less than 10 minutes old).")
-//            if let cachedWeather = loadWeatherFromCache() {
-//                self.current = cachedWeather.current
-//                self.hourly = cachedWeather.hourly
-//                self.daily = cachedWeather.daily
-//                return
-//            } else {
-//                print("Cached weather data missing or corrupted, refetching from API")
-//            }
-//        }
         do {
-            let bundle = try await WeatherManager.shared.fetchWeatherBundles(for: .init(latitude: lat, longitude: lon)
-            )
-            self.currentWeather = bundle.current
-            self.hourlyWeather = bundle.hourly
-            self.dailyWeather = bundle.daily
-            saveWeatherToCache(bundle)
-            lastFetchDate = now
-            print("Fetched new weather data from API.")
+            let bundle = try await weatherManager.fetchWeatherBundles(
+                            for: .init(latitude: city.latitude,
+                                       longitude: city.longitude))
+            WeatherCacheManager.save(bundle, for: city.id)
+            print("🔴 Called WeatherKit API for \(city.name)")
+            applyCache(bundle: bundle)
+
         } catch {
-            print("Error fetching weather data: \(error.localizedDescription)")
+            print(error)
         }
     }
+
+    func fetchCurrentLocationWeather(for location: CLLocation) async {
+        if let cached = WeatherCacheManager.loadCurrent(for: location) {
+            applyCache(bundle: cached)
+            print("🟢 Loaded from Cache for Current Location")
+            return
+        }
+        do {
+            let bundle = try await weatherManager.fetchWeatherBundles(
+                for: .init(latitude: location.coordinate.latitude,
+                           longitude: location.coordinate.longitude))
+            WeatherCacheManager.saveCurrent(bundle, location: location)
+            print("🔴 Called WeatherKit API for Current Location")
+            applyCache(bundle: bundle)
+        } catch {
+            print(error)
+        }
+    }
+
+
+
+
 }
