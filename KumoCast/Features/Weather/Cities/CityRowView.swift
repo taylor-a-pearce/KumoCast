@@ -10,7 +10,7 @@ import Foundation
 import WeatherKit
 
 struct CityRowView: View {
-    @StateObject private var viewModel = WeatherViewModel()
+    @StateObject private var viewModel = WeatherDashboardViewModel()
     @Environment(LocationManager.self) var locationManager
     @State private var isLoading: Bool = false
     @State private var timezone: TimeZone = .current

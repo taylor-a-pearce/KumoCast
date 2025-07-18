@@ -33,7 +33,7 @@
 		34FC4F9F2E1732BA00F2DACE /* Exceptions for "KumoCast" folder in "KumoCast" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
 			);
 			target = 3484EA9D2DEFAD7B0067CCC4 /* KumoCast */;
 		};
@@ -391,13 +391,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = KumoCast/KumoCast.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KumoCast/App/KumoCast.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7S6J272U8G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = KumoCast/Info.plist;
+				INFOPLIST_FILE = KumoCast/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KumoCast;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location to provide local weather information";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -424,13 +424,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = KumoCast/KumoCast.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KumoCast/App/KumoCast.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7S6J272U8G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = KumoCast/Info.plist;
+				INFOPLIST_FILE = KumoCast/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KumoCast;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location to provide local weather information";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -13,7 +13,6 @@ struct CitiesListView: View {
     @Environment(DataStore.self) private var store
     let currentLocation: City?
     @Binding var selectedCity: City?
-    @Binding var currentCity: City?
 
     @State private var isSearching = false
     @FocusState private var isFocused: Bool
@@ -40,7 +39,6 @@ struct CitiesListView: View {
                             if let currentLocation {
                                 CityRowView(city: currentLocation, isCurrentLocation: true)
                                     .onTapGesture {
-                                        currentCity = currentLocation
                                         selectedCity = nil
                                         dismiss()
                                     }
@@ -59,7 +57,6 @@ struct CitiesListView: View {
                                     }
                                     .onTapGesture {
                                         selectedCity = city
-                                        currentCity = nil
                                         dismiss()
                                     }
                                 }
@@ -81,7 +78,7 @@ struct CitiesListView: View {
     }
 
 #Preview {
-    CitiesListView(currentLocation: City.mockCity, selectedCity: .constant(nil), currentCity: .constant(nil))
+    CitiesListView(currentLocation: City.mockCity, selectedCity: .constant(nil))
         .environment(LocationManager())
         .environment(DataStore(forPreviews: true))
 }

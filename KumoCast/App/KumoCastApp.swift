@@ -14,7 +14,7 @@ struct KumoCastApp: App {
     var body: some Scene {
         WindowGroup {
             if locationManager.isAuthorized {
-                WeatherView()
+                WeatherDashboardView()
             } else {
                 LocationDeniedView()
             }
