@@ -6,6 +6,7 @@
 //
 import Foundation
 import CoreLocation
+import os
 
 enum WeatherCacheManager {
     private static let filemanager = FileManager.default

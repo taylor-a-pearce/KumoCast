@@ -33,10 +33,9 @@ struct WeatherDashboardView: View {
         case ready
     }
 
-    // MARK: - Selection for refresh logic
     enum Selection: Hashable {
-        case current(CLLocation)   // GPS coordinate
-        case selectedCity(City)    // whole City object
+        case current(CLLocation)
+        case selectedCity(City)
         case none
     }
 
