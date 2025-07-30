@@ -14,9 +14,16 @@ class WeatherManager {
     static let shared = WeatherManager()
     let service = WeatherService.shared
 
-    var temperatureFormatter: MeasurementFormatter = {
+    var temperatureFormatterWithUnit: MeasurementFormatter = {
         let formatter = MeasurementFormatter()
         formatter.numberFormatter.maximumFractionDigits = 0
+        formatter.unitOptions = .naturalScale 
+        return formatter
+    }()
+
+    var temperatureFormatterNoUnit: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 0
         return formatter
     }()
 
@@ -25,13 +32,10 @@ class WeatherManager {
         Logger.weather.info("Fetching weather for lat: \(coordinate.latitude), lon: \(coordinate.longitude)")
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
 
-        Logger.weather.debug("Fetching current weather")
         async let current = service.weather(for: location, including: .current)
 
-        Logger.weather.debug("Fetching hourly forecast")
         async let hourly = service.weather(for: location, including: .hourly)
 
-        Logger.weather.debug("Fetching daily forecast")
         async let daily = service.weather(for: location, including: .daily)
 
         do {

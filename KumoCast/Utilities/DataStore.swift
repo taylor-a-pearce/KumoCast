@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 
 @Observable
 class DataStore {
@@ -26,8 +27,9 @@ class DataStore {
                 do {
                     let data = try filemanager.readData(from: citiesURL)
                     cities = try JSONDecoder().decode([City].self, from: data)
+                    Logger.cache.debug("Loaded \(self.cities) cities from cities.json")
                 } catch {
-                    print(error.localizedDescription)
+                    Logger.cache.error("Failed to load cities from cities.json: \(error.localizedDescription, privacy: .public)")
                 }
             }
         }
@@ -38,19 +40,9 @@ class DataStore {
             do {
                 let data = try JSONEncoder().encode(cities)
                 try filemanager.saveData(data, to: citiesURL)
+                Logger.cache.debug("Saved \(self.cities) cities to cities.json")
             } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    func saveWeatherBundle() {
-        if !forPreviews {
-            do {
-                let data = try JSONEncoder().encode(cities)
-                try filemanager.saveData(data, to: citiesURL)
-            } catch {
-                print(error.localizedDescription)
+                Logger.cache.error("Failed to save cities to cities.json: \(error.localizedDescription, privacy: .public)")
             }
         }
     }

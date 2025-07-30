@@ -20,7 +20,7 @@ final class WeatherDashboardViewModel: ObservableObject {
 
     var highTemperature: String? {
         if let high = hourlyWeather?.map({$0.temperature}).max() {
-            return weatherManager.temperatureFormatter.string(from: high)
+            return WeatherManager.shared.temperatureFormatterNoUnit.string(from: NSNumber(value: high.value))
         } else {
             return nil
         }
@@ -28,7 +28,7 @@ final class WeatherDashboardViewModel: ObservableObject {
 
     var lowTemperature: String? {
         if let min = hourlyWeather?.map({$0.temperature}).min() {
-            return weatherManager.temperatureFormatter.string(from: min)
+            return WeatherManager.shared.temperatureFormatterNoUnit.string(from: NSNumber(value: min.value))
         } else {
             return nil
         }
@@ -41,17 +41,15 @@ final class WeatherDashboardViewModel: ObservableObject {
     }
 
     func fetchSelectedCityWeather(for city: City) async {
-        if let cached = WeatherCacheManager.load(for: city.id) {
+        if let cached = WeatherCacheManager.loadCachedWeatherForCityID(for: city) {
             applyCache(bundle: cached)
-            print("🟢 Loaded from Cache for \(city.name)")
             return
         }
         do {
             let bundle = try await weatherManager.fetchWeatherBundles(
                 for: .init(latitude: city.latitude,
                            longitude: city.longitude))
-            WeatherCacheManager.save(bundle, for: city.id)
-            print("🔴 Called WeatherKit API for \(city.name)")
+            WeatherCacheManager.saveWeatherToCacheForCity(bundle, for: city)
             applyCache(bundle: bundle)
 
         } catch {
@@ -60,17 +58,15 @@ final class WeatherDashboardViewModel: ObservableObject {
     }
 
     func fetchCurrentLocationWeather(for location: CLLocation) async {
-        if let cached = WeatherCacheManager.loadCurrent(for: location) {
+        if let cached = WeatherCacheManager.loadCachedWeatherForCurrentLocation(from: location) {
             applyCache(bundle: cached)
-            print("🟢 Loaded from Cache for Current Location")
             return
         }
         do {
             let bundle = try await weatherManager.fetchWeatherBundles(
                 for: .init(latitude: location.coordinate.latitude,
                            longitude: location.coordinate.longitude))
-            WeatherCacheManager.saveCurrent(bundle, location: location)
-            print("🔴 Called WeatherKit API for Current Location")
+            WeatherCacheManager.saveWeatherToCacheForCurrentLocation(bundle, location: location)
             applyCache(bundle: bundle)
         } catch {
             print(error)

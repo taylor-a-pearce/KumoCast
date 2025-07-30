@@ -18,6 +18,7 @@ struct MainWeatherView: View {
         Text(cityName)
             .font(.system(size: 32, weight: .medium, design: .default))
             .foregroundColor(.white)
+            .shadow(color: .black.opacity(0.6), radius: 4, x: 1, y: 1)
             .padding(.top, 70)
         HStack(spacing: 8) {
             Image(systemName: imageName)
@@ -29,12 +30,14 @@ struct MainWeatherView: View {
                 .foregroundColor(.white)
             VStack {
                 Text("\(temp)")
-                    .font(.system(size: 70, weight: .medium, design: .default))
+                    .font(.system(size: 70, weight: .light, design: .default))
                     .foregroundColor(.white)
+                    .shadow(color: .black.opacity(0.6), radius: 4, x: 1, y: 1)
                 if let highTemp, let lowTemp {
                     Text("H: \(highTemp) L:\(lowTemp)")
                         .bold()
                         .foregroundColor(.white)
+                        .shadow(color: .black.opacity(0.6), radius: 4, x: 1, y: 1)
 
                 }
             }

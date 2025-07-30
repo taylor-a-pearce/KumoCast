@@ -39,7 +39,7 @@ struct HourlyForecastView: View {
                                     .bold()
                             }
                             Spacer()
-                            Text(weatherManager.temperatureFormatter.string(from: hour.temperature))
+                            Text(weatherManager.temperatureFormatterWithUnit.string(from: hour.temperature))
                         }
                     }
                 }

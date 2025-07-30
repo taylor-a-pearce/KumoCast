@@ -6,6 +6,7 @@
 //
 
 import MapKit
+import os
 
 class SearchService: NSObject, MKLocalSearchCompleterDelegate {
     private let completer: MKLocalSearchCompleter
@@ -18,11 +19,13 @@ class SearchService: NSObject, MKLocalSearchCompleterDelegate {
     }
 
     func update(queryFragment: String) {
+        Logger.search.debug("Updating search query with fragment: \(queryFragment, privacy: .public)")
         completer.resultTypes = [.address]
         completer.queryFragment = queryFragment
     }
 
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        Logger.search.debug("Received \(completer.results.count) search completion results")
         cities = completer.results.compactMap { completion in
             if let mapItem = completion.value(forKey: "_mapItem") as? MKMapItem {
                 return City(

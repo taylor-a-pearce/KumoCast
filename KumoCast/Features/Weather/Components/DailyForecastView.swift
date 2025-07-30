@@ -48,7 +48,7 @@ struct DailyForecastView: View {
                             }
                             .frame(width: 25)
 
-                            Text(WeatherManager.shared.temperatureFormatter.string(from: day.lowTemperature))
+                            Text(WeatherManager.shared.temperatureFormatterWithUnit.string(from: day.lowTemperature))
                                 .font(.system(size: 14, weight: .bold))
                                 .frame(width: 50)
 
@@ -81,7 +81,7 @@ struct DailyForecastView: View {
                                     .offset(x: xOffset)
                                 }
 
-                            Text(WeatherManager.shared.temperatureFormatter.string(from: day.highTemperature))
+                            Text(WeatherManager.shared.temperatureFormatterWithUnit.string(from: day.highTemperature))
                                 .font(.system(size: 14, weight: .bold))
                                 .frame(width: 50)
                         }

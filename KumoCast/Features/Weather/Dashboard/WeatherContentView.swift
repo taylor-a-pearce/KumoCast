@@ -24,9 +24,8 @@ struct WeatherContentView: View {
                 ScrollView(.vertical) {
                     MainWeatherView(
                         cityName: city.name, imageName: currentWeather.symbolName,
-                        temp: WeatherManager.shared.temperatureFormatter.string(
+                        temp: WeatherManager.shared.temperatureFormatterWithUnit.string(
                             from: (currentWeather.temperature)
-                                .converted(to: .fahrenheit)
                         ),
                         highTemp: highTemp,
                         lowTemp: lowTemp

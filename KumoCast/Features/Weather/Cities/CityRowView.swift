@@ -34,9 +34,9 @@ struct CityRowView: View {
                             .foregroundColor(.white)
                     }
                     Spacer()
-                    Text(WeatherManager.shared.temperatureFormatter.string(from: (viewModel.currentWeather?.temperature
+                    Text(WeatherManager.shared.temperatureFormatterWithUnit.string(from: (viewModel.currentWeather?.temperature
                                                                                   ?? Measurement(value: 0, unit: UnitTemperature.celsius))
-                        .converted(to: .fahrenheit)))
+                        ))
                     .font(.system(size: 60, weight: .thin, design: .rounded))
                     .foregroundColor(.white)
                 }
@@ -50,6 +50,9 @@ struct CityRowView: View {
         .background {
                 if let condition = viewModel.currentWeather?.condition {
                     BackgroundView(condition: condition)
+                        .scaleEffect(1.25)
+                        // keep anything that hangs outside the row from spilling over
+                        .clipped()
                 }
         }
         .task(id: city) {
